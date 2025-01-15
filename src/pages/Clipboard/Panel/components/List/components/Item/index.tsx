@@ -1,14 +1,17 @@
 import Icon from "@/components/Icon";
 import { ClipboardPanelContext } from "@/pages/Clipboard/Panel";
-import type { ClipboardItem } from "@/types/database";
+import type { HistoryTablePayload } from "@/types/database";
+import { startDrag } from "@crabnebula/tauri-plugin-drag";
 import { Menu, MenuItem, type MenuItemOptions } from "@tauri-apps/api/menu";
-import { downloadDir } from "@tauri-apps/api/path";
+import { downloadDir, resolveResource } from "@tauri-apps/api/path";
 import { copyFile, writeTextFile } from "@tauri-apps/plugin-fs";
 import { open } from "@tauri-apps/plugin-shell";
-import { Flex, type FlexProps } from "antd";
+import { Flex, type FlexProps, message } from "antd";
+import type { HookAPI } from "antd/es/modal/useModal";
 import clsx from "clsx";
 import { find, isNil, remove } from "lodash-es";
-import type { FC, MouseEvent } from "react";
+import type { DragEvent, FC, MouseEvent } from "react";
+import { open as openPath } from "tauri-plugin-fs-pro-api";
 import { useSnapshot } from "valtio";
 import Files from "./components/Files";
 import HTML from "./components/HTML";
@@ -19,7 +22,8 @@ import Text from "./components/Text";
 
 interface ItemProps extends Partial<FlexProps> {
 	index: number;
-	data: ClipboardItem;
+	data: HistoryTablePayload;
+	deleteModal: HookAPI;
 	openNoteModel: () => void;
 }
 
@@ -28,8 +32,8 @@ interface ContextMenuItem extends MenuItemOptions {
 }
 
 const Item: FC<ItemProps> = (props) => {
-	const { index, data, className, openNoteModel, ...rest } = props;
-	const { id, type, value, search, group, favorite, note } = data;
+	const { index, data, className, deleteModal, openNoteModel, ...rest } = props;
+	const { id, type, value, search, group, favorite, note, subtype } = data;
 	const { state } = useContext(ClipboardPanelContext);
 	const { t } = useTranslation();
 	const { env } = useSnapshot(globalStore);
@@ -49,6 +53,8 @@ const Item: FC<ItemProps> = (props) => {
 				return selectNextOrPrev(false);
 			case LISTEN_KEY.CLIPBOARD_ITEM_SELECT_NEXT:
 				return selectNextOrPrev();
+			case LISTEN_KEY.CLIPBOARD_ITEM_FAVORITE:
+				return toggleFavorite();
 		}
 	});
 
@@ -91,14 +97,14 @@ const Item: FC<ItemProps> = (props) => {
 
 		await writeTextFile(path, value);
 
-		openPath(path);
+		openPath(path, { explorer: true });
 	};
 
 	// 预览
 	const preview = () => {
 		if (type !== "image") return;
 
-		openPath(value, false);
+		openPath(value);
 	};
 
 	// 下载图片
@@ -108,18 +114,40 @@ const Item: FC<ItemProps> = (props) => {
 
 		await copyFile(value, path);
 
-		openPath(path);
+		openPath(path, { explorer: true });
 	};
 
 	// 打开文件至访达
 	const openFinder = () => {
-		const [file] = JSON.parse(value);
+		if (subtype === "path") {
+			openPath(value, {
+				explorer: true,
+				enterDir: true,
+			});
+		} else {
+			const [file] = JSON.parse(value);
 
-		openPath(file);
+			openPath(file, { explorer: true });
+		}
 	};
 
 	// 删除条目
-	const deleteItem = () => {
+	const deleteItem = async () => {
+		let confirmed = true;
+
+		if (clipboardStore.content.deleteConfirm) {
+			confirmed = await deleteModal.confirm({
+				centered: true,
+				content: t("clipboard.hints.delete_modal_content"),
+				afterClose() {
+					// 关闭确认框后焦点还在，需要手动取消焦点
+					(document.activeElement as HTMLElement)?.blur();
+				},
+			});
+		}
+
+		if (!confirmed) return;
+
 		if (state.activeId === id) {
 			const nextIndex = selectNextOrPrev();
 
@@ -195,12 +223,12 @@ const Item: FC<ItemProps> = (props) => {
 			},
 			{
 				text: t("clipboard.button.context_menu.open_in_browser"),
-				hide: type !== "text" || !isURL(value),
+				hide: subtype !== "url",
 				action: openBrowser,
 			},
 			{
 				text: t("clipboard.button.context_menu.send_email"),
-				hide: type !== "text" || !isEmail(value),
+				hide: subtype !== "email",
 				action: sendEmail,
 			},
 			{
@@ -222,7 +250,7 @@ const Item: FC<ItemProps> = (props) => {
 				text: isMac()
 					? t("clipboard.button.context_menu.show_in_finder")
 					: t("clipboard.button.context_menu.show_in_file_explorer"),
-				hide: type !== "files",
+				hide: type !== "files" && subtype !== "path",
 				action: openFinder,
 			},
 			{
@@ -251,6 +279,23 @@ const Item: FC<ItemProps> = (props) => {
 		pasteValue();
 	};
 
+	// 拖拽事件
+	const handleDragStart = async (event: DragEvent) => {
+		event.preventDefault();
+
+		const icon = await resolveResource("assets/drag-icon.png");
+
+		if (group === "text") {
+			return message.warning("暂不支持拖拽文本");
+		}
+
+		if (group === "image") {
+			return startDrag({ item: [value], icon: value });
+		}
+
+		startDrag({ icon, item: JSON.parse(value) });
+	};
+
 	// 渲染内容
 	const renderContent = () => {
 		switch (type) {
@@ -271,6 +316,7 @@ const Item: FC<ItemProps> = (props) => {
 		<Flex
 			{...rest}
 			vertical
+			draggable
 			gap={4}
 			className={clsx(
 				className,
@@ -282,10 +328,13 @@ const Item: FC<ItemProps> = (props) => {
 			onContextMenu={handleContextMenu}
 			onClick={() => handleClick("single")}
 			onDoubleClick={() => handleClick("double")}
+			onDragStart={handleDragStart}
 		>
 			<Header
 				data={data}
 				copy={copy}
+				pastePlain={pastePlain}
+				openNoteModel={openNoteModel}
 				toggleFavorite={toggleFavorite}
 				deleteItem={deleteItem}
 			/>
@@ -293,10 +342,8 @@ const Item: FC<ItemProps> = (props) => {
 			<div className="relative flex-1 select-auto overflow-hidden break-words children:transition">
 				<div
 					className={clsx(
-						"absolute inset-0 line-clamp-4 opacity-100 group-hover:opacity-0",
-						{
-							"opacity-0!": !note,
-						},
+						"pointer-events-none absolute inset-0 line-clamp-4 opacity-100 group-hover:opacity-0",
+						{ "opacity-0!": !note },
 					)}
 				>
 					<Icon

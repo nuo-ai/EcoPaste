@@ -1,8 +1,6 @@
-export const useOSKeyPress: typeof useKeyPress = (
-	keyFilter,
-	handler,
-	option,
-) => {
+export const useOSKeyPress: typeof useKeyPress = (...args) => {
+	const [keyFilter, handler, option] = args;
+
 	useKeyPress(
 		keyFilter,
 		(event, key) => {
@@ -14,6 +12,6 @@ export const useOSKeyPress: typeof useKeyPress = (
 
 			handler(event, key);
 		},
-		option,
+		{ exactMatch: true, ...option },
 	);
 };

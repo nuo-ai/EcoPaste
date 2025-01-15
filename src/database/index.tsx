@@ -1,23 +1,23 @@
-import type { ClipboardItem, TableName, TablePayload } from "@/types/database";
-import { getName } from "@tauri-apps/api/app";
+import type { TableName, TablePayload } from "@/types/database";
+import { remove } from "@tauri-apps/plugin-fs";
 import Database from "@tauri-apps/plugin-sql";
-import { entries, find, isBoolean, isNil, map, omitBy, some } from "lodash-es";
+import { entries, isBoolean, isNil, map, omitBy, some } from "lodash-es";
 
-let db: Database | null;
+let db: Database | null = null;
 
 /**
  * 初始化数据库
  */
 export const initDatabase = async () => {
-	const appName = await getName();
-	const extname = isDev() ? "dev.db" : "db";
-	const path = joinPath(getSaveDataDir(), `${appName}.${extname}`);
+	if (db) return;
+
+	const path = await getSaveDatabasePath();
 
 	db = await Database.load(`sqlite:${path}`);
 
-	const createHistoryQuery = (tableName = "history") => {
-		return `
-        CREATE TABLE IF NOT EXISTS ${tableName} (
+	// 创建 `history` 表
+	await executeSQL(`
+        CREATE TABLE IF NOT EXISTS history (
 			id TEXT PRIMARY KEY,
 			type TEXT,
 			[group] TEXT,
@@ -28,50 +28,10 @@ export const initDatabase = async () => {
 			height INTEGER,
 			favorite INTEGER DEFAULT 0,
 			createTime TEXT,
-			note TEXT
+			note TEXT,
+			subtype TEXT
 		);
-        `;
-	};
-
-	// 创建 `history` 表
-	await executeSQL(createHistoryQuery());
-
-	// 将 `type` 为 rich-text 的更换为 rtf
-	await executeSQL("UPDATE history SET type = ? WHERE type = ?;", [
-		"rtf",
-		"rich-text",
-	]);
-
-	const fields = await getFields("history");
-
-	// `isCollected` 更名 `favorite`
-	await renameField("history", "isCollected", "favorite");
-
-	// `size` 更名 `count`
-	await renameField("history", "size", "count");
-
-	if (!some(fields, { name: "note" })) {
-		// 新增 `remark`
-		await addField("history", "remark", "TEXT");
-
-		// `remark` 更名 `note`
-		await renameField("history", "remark", "note");
-	}
-
-	// 将 `id` 从 INTEGER 转为 TEXT 类型
-	if (find(fields, { name: "id" })?.type === "INTEGER") {
-		const tableName = "temp_history";
-
-		await executeSQL(createHistoryQuery(tableName));
-
-		await executeSQL(
-			`INSERT INTO ${tableName} (id, type, [group], value, search, count, width, height, favorite, createTime, note) SELECT CAST(id AS TEXT), type, [group], value, search, count, width, height, favorite, createTime, note FROM history;`,
-		);
-
-		await executeSQL("DROP TABLE history;");
-
-		await executeSQL(`ALTER TABLE ${tableName} RENAME TO history;`);
-	}
+        `);
 };
 
 /**
@@ -103,9 +63,7 @@ const handlePayload = (payload: TablePayload) => {
  * @param sql sql 语句
  */
 export const executeSQL = async (query: string, values?: unknown[]) => {
-	if (!db) {
-		await initDatabase();
-	}
+	await initDatabase();
 
 	if (query.startsWith("SELECT") || query.startsWith("PRAGMA")) {
 		return await db!.select(query, values);
@@ -174,6 +132,8 @@ export const updateSQL = (tableName: TableName, payload: TablePayload) => {
 
 	const { keys, values } = handlePayload(rest);
 
+	if (keys.length === 0) return;
+
 	const setClause = map(keys, (item) => `${item} = ?`);
 
 	return executeSQL(
@@ -187,21 +147,23 @@ export const updateSQL = (tableName: TableName, payload: TablePayload) => {
  * @param tableName 表名称
  * @param id 删除数据的 id
  */
-export const deleteSQL = async (tableName: TableName, item: ClipboardItem) => {
+export const deleteSQL = async (tableName: TableName, item: TablePayload) => {
 	const { id, type, value } = item;
 
 	await executeSQL(`DELETE FROM ${tableName} WHERE id = ?;`, [id]);
 
-	if (type !== "image") return;
+	if (type !== "image" || !value) return;
 
-	return removeFile(getSaveImagePath(value));
+	return remove(resolveImagePath(value));
 };
 
 /**
  * 关闭数据库连接池
  */
 export const closeDatabase = async () => {
-	await db?.close();
+	if (!db) return;
+
+	await db.close();
 
 	db = null;
 };
@@ -223,7 +185,7 @@ const getFields = async (tableName: TableName) => {
  * @param rename 重命名
  * @returns
  */
-const renameField = async (
+export const renameField = async (
 	tableName: TableName,
 	field: string,
 	rename: string,
@@ -243,7 +205,11 @@ const renameField = async (
  * @param field 字段
  * @param type 类型
  */
-const addField = async (tableName: TableName, field: string, type: string) => {
+export const addField = async (
+	tableName: TableName,
+	field: string,
+	type: string,
+) => {
 	const fields = await getFields(tableName);
 
 	if (some(fields, { name: field })) return;

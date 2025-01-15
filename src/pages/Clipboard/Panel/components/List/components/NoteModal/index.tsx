@@ -1,5 +1,5 @@
 import { ClipboardPanelContext } from "@/pages/Clipboard/Panel";
-import type { ClipboardItem } from "@/types/database";
+import type { HistoryTablePayload } from "@/types/database";
 import { Form, Input, type InputRef, Modal } from "antd";
 import { t } from "i18next";
 import { find } from "lodash-es";
@@ -15,7 +15,7 @@ interface FormFields {
 const NoteModal = forwardRef<NoteModalRef>((_, ref) => {
 	const { state } = useContext(ClipboardPanelContext);
 	const [open, { toggle }] = useBoolean();
-	const [item, setItem] = useState<ClipboardItem>();
+	const [item, setItem] = useState<HistoryTablePayload>();
 	const [form] = Form.useForm<FormFields>();
 	const inputRef = useRef<InputRef>(null);
 
@@ -37,9 +37,17 @@ const NoteModal = forwardRef<NoteModalRef>((_, ref) => {
 		const { note } = form.getFieldsValue();
 
 		if (item) {
+			const { id, favorite } = item;
+
 			item.note = note;
 
-			updateSQL("history", { id: item.id, note });
+			updateSQL("history", { id, note });
+
+			if (clipboardStore.content.autoFavorite && !favorite) {
+				item.favorite = true;
+
+				updateSQL("history", { id, favorite: true });
+			}
 		}
 
 		toggle();
@@ -69,6 +77,7 @@ const NoteModal = forwardRef<NoteModalRef>((_, ref) => {
 				<Form.Item name="note" className="mb-0!">
 					<Input
 						ref={inputRef}
+						autoComplete="off"
 						placeholder={t("component.note_modal.hints.input_note")}
 					/>
 				</Form.Item>

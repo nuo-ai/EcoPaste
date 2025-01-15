@@ -55,26 +55,22 @@ pub fn run() {
         .plugin(tauri_plugin_updater::Builder::new().build())
         // 进程相关插件：https://github.com/tauri-apps/tauri-plugin-process
         .plugin(tauri_plugin_process::init())
+        // 拖拽插件：https://github.com/crabnebula-dev/drag-rs
+        .plugin(tauri_plugin_drag::init())
+        // macos 权限查询的插件：https://github.com/ayangweb/tauri-plugin-macos-permissions
+        .plugin(tauri_plugin_macos_permissions::init())
+        // 拓展了对文件和目录的操作
+        .plugin(tauri_plugin_fs_pro::init())
         // 自定义的窗口管理插件
         .plugin(tauri_plugin_eco_window::init())
-        // 自定义的 fs_extra 插件
-        .plugin(tauri_plugin_eco_fs_extra::init())
         // 自定义剪贴板插件
         .plugin(tauri_plugin_eco_clipboard::init())
-        // 自定义鼠标相关的插件
-        .plugin(tauri_plugin_eco_mouse::init())
         // 自定义图片识别插件
         .plugin(tauri_plugin_eco_ocr::init())
-        // 自定义备份插件
-        .plugin(tauri_plugin_eco_backup::init())
         // 自定义语言相关的插件
         .plugin(tauri_plugin_eco_locale::init())
         // 自定义粘贴的插件
         .plugin(tauri_plugin_eco_paste::init())
-        // 自定义 macos 权限查询的插件
-        .plugin(tauri_plugin_eco_macos_permissions::init())
-        // 自定义保存和恢复窗口状态的插件
-        .plugin(tauri_plugin_eco_window_state::init())
         // 自定义判断是否自动启动的插件
         .plugin(tauri_plugin_eco_autostart::init())
         .on_window_event(|window, event| match event {
@@ -86,7 +82,6 @@ pub fn run() {
             }
             _ => {}
         })
-        .invoke_handler(tauri::generate_handler![])
         .build(generate_context!())
         .expect("error while running tauri application");
 

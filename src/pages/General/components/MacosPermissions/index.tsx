@@ -1,6 +1,13 @@
 import Icon from "@/components/Icon";
 import ProList from "@/components/ProList";
 import ProListItem from "@/components/ProListItem";
+import { confirm } from "@tauri-apps/plugin-dialog";
+import {
+	checkAccessibilityPermissions,
+	checkFullDiskAccessPermissions,
+	requestAccessibilityPermissions,
+	requestFullDiskAccessPermissions,
+} from "tauri-plugin-macos-permissions-api";
 
 const MacosPermissions = () => {
 	const { t } = useTranslation();
@@ -39,7 +46,7 @@ const MacosPermissions = () => {
 
 		if (opened) return;
 
-		const yes = await ask(
+		const confirmed = await confirm(
 			t(
 				"preference.settings.permission_settings.hints.confirm_full_disk_access",
 			),
@@ -56,7 +63,7 @@ const MacosPermissions = () => {
 			},
 		);
 
-		if (!yes) return;
+		if (!confirmed) return;
 
 		requestFullDiskAccessPermissions();
 	};

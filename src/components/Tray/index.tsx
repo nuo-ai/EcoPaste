@@ -2,26 +2,31 @@ import { emit } from "@tauri-apps/api/event";
 import { Menu, MenuItem, PredefinedMenuItem } from "@tauri-apps/api/menu";
 import { resolveResource } from "@tauri-apps/api/path";
 import { TrayIcon, type TrayIconOptions } from "@tauri-apps/api/tray";
-import { exit } from "@tauri-apps/plugin-process";
+import { exit, relaunch } from "@tauri-apps/plugin-process";
 import { open } from "@tauri-apps/plugin-shell";
 
 const Tray = () => {
-	const navigate = useNavigate();
 	const [startListen, { toggle }] = useBoolean(true);
 	const { t } = useTranslation();
 
-	useMount(async () => {
-		await createTrayIcon();
+	useMount(() => {
+		createTrayIcon();
+	});
 
-		// 监听是否显示菜单栏图标
-		watchKey(globalStore.app, "showMenubarIcon", async (value) => {
-			const tray = await getTrayById();
+	// 监听是否显示菜单栏图标
+	useSubscribeKey(globalStore.app, "showMenubarIcon", async (value) => {
+		const tray = await getTrayById();
 
-			tray?.setVisible(value);
-		});
+		if (tray) {
+			tray.setVisible(value);
+		} else {
+			createTrayIcon();
+		}
+	});
 
-		// 监听语言变更
-		watchKey(globalStore.appearance, "language", updateTrayMenu);
+	// 监听语言变更
+	useSubscribeKey(globalStore.appearance, "language", () => {
+		updateTrayMenu();
 	});
 
 	useUpdateEffect(() => {
@@ -37,6 +42,8 @@ const Tray = () => {
 
 	// 创建托盘图标
 	const createTrayIcon = async () => {
+		if (!globalStore.app.showMenubarIcon) return;
+
 		const tray = await getTrayById();
 
 		if (tray) return;
@@ -84,14 +91,6 @@ const Tray = () => {
 			}),
 			PredefinedMenuItem.new({ item: "Separator" }),
 			MenuItem.new({
-				text: t("component.tray.label.about"),
-				action: () => {
-					showWindow();
-
-					navigate("about");
-				},
-			}),
-			MenuItem.new({
 				text: t("component.tray.label.check_update"),
 				action: () => {
 					showWindow();
@@ -109,8 +108,12 @@ const Tray = () => {
 				enabled: false,
 			}),
 			MenuItem.new({
+				text: t("component.tray.label.relaunch"),
+				action: relaunch,
+			}),
+			MenuItem.new({
 				text: t("component.tray.label.exit"),
-				action: () => exit(1),
+				action: () => exit(0),
 			}),
 		]);
 

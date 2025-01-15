@@ -1,10 +1,11 @@
 import Scrollbar from "@/components/Scrollbar";
-import type { ClipboardItem } from "@/types/database";
+import type { HistoryTablePayload } from "@/types/database";
 import { Flex, Tag } from "antd";
 import clsx from "clsx";
+import { last } from "lodash-es";
 import { ClipboardPanelContext } from "../..";
 
-interface GroupItem extends Partial<ClipboardItem> {
+interface GroupItem extends Partial<HistoryTablePayload> {
 	key: string;
 	label: string;
 }
@@ -12,6 +13,7 @@ interface GroupItem extends Partial<ClipboardItem> {
 const Group = () => {
 	const { state } = useContext(ClipboardPanelContext);
 	const { t } = useTranslation();
+	const [checked, setChecked] = useState("all");
 
 	const groupList: GroupItem[] = [
 		{
@@ -40,7 +42,33 @@ const Group = () => {
 		},
 	];
 
-	const [checked, setChecked] = useState(groupList[0].key);
+	useTauriFocus({
+		onFocus() {
+			if (!clipboardStore.window.showAll) return;
+
+			handleChange(groupList[0]);
+		},
+	});
+
+	useOSKeyPress("tab", () => {
+		const index = groupList.findIndex((item) => item.key === checked);
+
+		if (index === groupList.length - 1) {
+			handleChange(groupList[0]);
+		} else {
+			handleChange(groupList[index + 1]);
+		}
+	});
+
+	useOSKeyPress("shift.tab", () => {
+		const index = groupList.findIndex((item) => item.key === checked);
+
+		if (index === 0) {
+			handleChange(last(groupList)!);
+		} else {
+			handleChange(groupList[index - 1]);
+		}
+	});
 
 	const handleChange = (item: GroupItem) => {
 		const { key, group, favorite } = item;

@@ -1,10 +1,10 @@
-import type { ClipboardItem } from "@/types/database";
+import type { HistoryTablePayload } from "@/types/database";
 import { Flex } from "antd";
 import clsx from "clsx";
 import type { CSSProperties, FC } from "react";
 
-const Text: FC<ClipboardItem> = (props) => {
-	const { value } = props;
+const Text: FC<HistoryTablePayload> = (props) => {
+	const { value, subtype } = props;
 
 	const renderColor = () => {
 		const className = "absolute rounded-full";
@@ -29,7 +29,7 @@ const Text: FC<ClipboardItem> = (props) => {
 	};
 
 	const renderContent = () => {
-		if (isColor(value)) {
+		if (subtype === "color") {
 			return renderColor();
 		}
 

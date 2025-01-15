@@ -16,11 +16,11 @@
 
 - 認領 issue：在 Github 建立 Issue 並認領（或直接認領已有 Issue），告知大家自己正在修復，避免重複工作。
 - 項目開發：在完成準備工作後，進行 Bug 修復或功能開發。
-- 提交 PR
+- 提交 PR。
 
 ### 準備工作
 
-- [Rust](https://tauri.app/v1/guides/getting-started/prerequisites/): 請自行根據官網步驟安裝 rust 環境。
+- [Rust](https://v1.tauri.app/v1/guides/getting-started/prerequisites/): 請自行根據官網步驟安裝 rust 環境。
 - [Node.js](https://nodejs.org/en/): 用於運行項目。
 - [Pnpm](https://pnpm.io/)：本項目使用 Pnpm 進行包管理。
 

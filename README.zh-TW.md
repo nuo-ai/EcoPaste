@@ -11,24 +11,26 @@
   
   <br/>
 
-  <a href="https://github.com/EcoPasteHub/EcoPaste/releases">
-    <img
-      alt="Windows"
-      src="https://img.shields.io/badge/-Windows-blue?style=flat-square&logo=data:image/svg+xml;base64,PHN2ZyB0PSIxNzI2MzA1OTcxMDA2IiBjbGFzcz0iaWNvbiIgdmlld0JveD0iMCAwIDEwMjQgMTAyNCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHAtaWQ9IjE1NDgiIHdpZHRoPSIxMjgiIGhlaWdodD0iMTI4Ij48cGF0aCBkPSJNNTI3LjI3NTU1MTYxIDk2Ljk3MTAzMDEzdjM3My45OTIxMDY2N2g0OTQuNTEzNjE5NzVWMTUuMDI2NzU3NTN6TTUyNy4yNzU1NTE2MSA5MjguMzIzNTA4MTVsNDk0LjUxMzYxOTc1IDgwLjUyMDI4MDQ5di00NTUuNjc3NDcxNjFoLTQ5NC41MTM2MTk3NXpNNC42NzA0NTEzNiA0NzAuODMzNjgyOTdINDIyLjY3Njg1OTI1VjExMC41NjM2ODE5N2wtNDE4LjAwNjQwNzg5IDY5LjI1Nzc5NzUzek00LjY3MDQ1MTM2IDg0Ni43Njc1OTcwM0w0MjIuNjc2ODU5MjUgOTE0Ljg2MDMxMDEzVjU1My4xNjYzMTcwM0g0LjY3MDQ1MTM2eiIgcC1pZD0iMTU0OSIgZmlsbD0iI2ZmZmZmZiI+PC9wYXRoPjwvc3ZnPg=="
-    />
-  </a >  
-  <a href="https://github.com/EcoPasteHub/EcoPaste/releases">
-    <img
-      alt="MacOS"
-      src="https://img.shields.io/badge/-MacOS-black?style=flat-square&logo=apple&logoColor=white"
-    />
-  </a >
-  <a href="https://github.com/EcoPasteHub/EcoPaste/releases">
-    <img 
-      alt="Linux"
-      src="https://img.shields.io/badge/-Linux-yellow?style=flat-square&logo=linux&logoColor=white" 
-    />
-  </a>
+  <div>
+    <a href="https://github.com/EcoPasteHub/EcoPaste/releases">
+      <img
+        alt="Windows"
+        src="https://img.shields.io/badge/-Windows-blue?style=flat-square&logo=data:image/svg+xml;base64,PHN2ZyB0PSIxNzI2MzA1OTcxMDA2IiBjbGFzcz0iaWNvbiIgdmlld0JveD0iMCAwIDEwMjQgMTAyNCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHAtaWQ9IjE1NDgiIHdpZHRoPSIxMjgiIGhlaWdodD0iMTI4Ij48cGF0aCBkPSJNNTI3LjI3NTU1MTYxIDk2Ljk3MTAzMDEzdjM3My45OTIxMDY2N2g0OTQuNTEzNjE5NzVWMTUuMDI2NzU3NTN6TTUyNy4yNzU1NTE2MSA5MjguMzIzNTA4MTVsNDk0LjUxMzYxOTc1IDgwLjUyMDI4MDQ5di00NTUuNjc3NDcxNjFoLTQ5NC41MTM2MTk3NXpNNC42NzA0NTEzNiA0NzAuODMzNjgyOTdINDIyLjY3Njg1OTI1VjExMC41NjM2ODE5N2wtNDE4LjAwNjQwNzg5IDY5LjI1Nzc5NzUzek00LjY3MDQ1MTM2IDg0Ni43Njc1OTcwM0w0MjIuNjc2ODU5MjUgOTE0Ljg2MDMxMDEzVjU1My4xNjYzMTcwM0g0LjY3MDQ1MTM2eiIgcC1pZD0iMTU0OSIgZmlsbD0iI2ZmZmZmZiI+PC9wYXRoPjwvc3ZnPg=="
+      />
+    </a >  
+    <a href="https://github.com/EcoPasteHub/EcoPaste/releases">
+      <img
+        alt="MacOS"
+        src="https://img.shields.io/badge/-MacOS-black?style=flat-square&logo=apple&logoColor=white"
+      />
+    </a >
+    <a href="https://github.com/EcoPasteHub/EcoPaste/releases">
+      <img 
+        alt="Linux"
+        src="https://img.shields.io/badge/-Linux-yellow?style=flat-square&logo=linux&logoColor=white" 
+      />
+    </a>
+  </div>
 
   <div>
     <a href="./LICENSE">
@@ -51,9 +53,9 @@
   <br/>
 
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="./images/app-dark.zh-TW.png" />
-    <source media="(prefers-color-scheme: light)" srcset="./images/app-light.zh-TW.png" />
-    <img src="./images/app-light.zh-TW.png" />
+    <source media="(prefers-color-scheme: dark)" srcset="./static/app-dark.zh-TW.png" />
+    <source media="(prefers-color-scheme: light)" srcset="./static/app-light.zh-TW.png" />
+    <img src="./static/app-light.zh-TW.png" />
   </picture>
 </div>
 
@@ -61,149 +63,41 @@
 
 ### Windows
 
-手動安裝：[Universal](https://ecopaste-updater.ayangweb.cn/api/stable?platform=windows)
+手動下載：[x86](https://api.ecopaste.cn/download?platform=windows-x86) | [x64](https://api.ecopaste.cn/download?platform=windows-x64) | [ARM64](https://api.ecopaste.cn/download?platform=windows-arm)
 
-### Macos
+### MacOS
 
-手動安裝：[Apple Silicon](https://ecopaste-updater.ayangweb.cn/api/stable?platform=macos-arm) | [Intel](https://ecopaste-updater.ayangweb.cn/api/stable?platform=macos-x64)
+手動下載：[Apple Silicon](https://api.ecopaste.cn/download?platform=macos-arm) | [Intel](https://api.ecopaste.cn/download?platform=macos-x64)
 
-HomeBrew：
-
-1. 添加我們的 tap:
-```shell
-brew tap EcoPasteHub/EcoPaste
-```
-
-2. 安裝:
-```shell
-brew install ecopaste
-```
-
-3. 更新:
-```shell
-brew upgrade ecopaste
-```
-
-4. 卸載:
-```shell
-brew uninstall --cask ecopaste
-
-brew untap EcoPasteHub/EcoPaste
-```
+HomeBrew：[點擊查看](https://ecopaste.cn/guide/install#%E4%BD%BF%E7%94%A8-homebrew-%E5%AE%89%E8%A3%85)
 
 ### Linux(x11)
 
-手動安裝：[AppImage](https://ecopaste-updater.ayangweb.cn/api/stable?platform=linux-appimage) | [deb](https://ecopaste-updater.ayangweb.cn/api/stable?platform=linux-deb) | [rpm](https://ecopaste-updater.ayangweb.cn/api/stable?platform=linux-rpm)
+手動下載：[deb](https://api.ecopaste.cn/download?platform=linux-deb) | [AppImage](https://api.ecopaste.cn/download?platform=linux-appimage) | [rpm](https://api.ecopaste.cn/download?platform=linux-rpm)
 
-* Ubuntu、Debain系列：
-```shell
-wget "https://ecopaste-updater.ayangweb.cn/api/stable?platform=linux-deb" -O ecopaste-stable.deb
-sudo dpkg -i ecopaste-stable.deb
-```
-
-* Red Hat、CentOS、Fedora系列：
-```shell
-wget "https://ecopaste-updater.ayangweb.cn/api/stable?platform=linux-rpm" -O ecopaste-stable.rpm
-sudo yum install ecopaste-stable.rpm
-```
-
-* Manjaro、ArchLinux系列：
-```shell
-yay -S eco-paste-bin
-```
-
-* 其他發行版：
-```shell
-wget "https://ecopaste-updater.ayangweb.cn/api/stable?platform=linux-appimage" -O EcoPaste.AppImage
-chmod +x EcoPaste.AppImage
-./EcoPaste.AppImage --appimage-extract
-
-sed -i 's|Exec=.*|Exec=/opt/ecopaste/EcoPaste.AppImage|g' squashfs-root/usr/share/applications/eco-paste.desktop
-sed -i 's/^Icon=.*/Icon=EcoPaste/g' squashfs-root/usr/share/applications/eco-paste.desktop
-install -Dm644 squashfs-root/usr/share/applications/eco-paste.desktop /usr/share/applications/EcoPaste.desktop
-
-wget "https://raw.githubusercontent.com/EcoPasteHub/EcoPaste-Logo/refs/heads/master/img/logo.svg" -O EcoPaste.svg
-install -Dm644 EcoPaste.svg /usr/share/icons/hicolor/scalable/apps/EcoPaste.svg
-
-rm -r squashfs-root EcoPaste.svg
-
-mkdir -p /opt/ecopaste
-mv ecopaste.AppImage /opt/ecopaste/
-```
+安裝指南：[點擊查看](https://ecopaste.cn/guide/install#linux)
 
 ## 功能介紹
 
-- **輕量小巧，多平臺用**：
-  
-  使用 Tauri 構建，應用更加小巧精致，資源占用極少，同時完美適配 Windows、MacOS 和 Linux 平臺，保證多平臺一致的用戶體驗。
+- 🎉 基於 Tauri v2 開發，輕量高效，跨平臺體驗更進一步。
+- 💻 支持 Windows、macOS 和 Linux（x11），在多設備間無縫切換。
+- ✨ 簡潔直觀的使用者介面，操作簡單，零門檻上手，開箱即用。
+- 📋 支持純文字、富文字、HTML、圖片和檔案類型的剪貼板內容。
+- 🔒 數據本地存儲，確保用戶隱私安全，數據完全掌控在用戶手中。
+- 📝 支持備註功能，輕鬆分類、管理和檢索，讓工作更高效。
+- ⚙️ 豐富的個性化設定，滿足不同用戶需求，打造專屬體驗。
+- 🤝 完善的檔案與社區支持，與開發者共同探索與成長。
+- 🧩 持續優化中，更多驚喜功能等你發現。
 
-- **常駐後臺，快捷喚醒**：
+## 問題迴響
 
-  應用常駐後臺運行，通過自定義快捷鍵一鍵喚醒，幫助用戶快速調用剪貼板內容，極大地提高工作效率。
+1. 🔍 優先查閱[常見問題](https://ecopaste.cn/problem/macos/damage)或瀏覽已有 [issues](https://github.com/EcoPasteHub/EcoPaste/issues)。
 
-- **本地存儲，數據安全**：
-
-  所有剪貼板內容均在本地存儲，確保數據隱私和安全，不會有任何數據泄漏風險。
-
-- **智能管理，類型分組**：
-
-  支持純文本、富文本、HTML、圖片和文件類型，並自動根據剪貼板內容類型進行分組管理，方便用戶高效查找和使用。
-
-- **收藏功能，快速訪問**：
-
-  支持收藏剪貼板內容，方便快速訪問和管理重要信息。無論是工作中的關鍵數據還是日常生活中的常用信息，都可以輕松收藏和查看。
-
-- **內置搜索，輕松查找**：
-
-  內置搜索功能，幫助用戶快速找到任何剪貼板上的內容，無論是文本、圖片（OCR文本搜索）還是文件，所有內容都可以一目了然。
-
-- **圖片OCR，離線識別**：
-
-  內置系統 OCR 功能，支持文本和二維碼識別，通過右鍵菜單快速復製識別到的 OCR 內容，實現離線識別，使用更便捷。
-
-- **右鍵菜單，操作便捷**：
-
-  提供豐富的右鍵菜單選項，用戶可以快速進行各種操作，極大地提高了使用便捷性。
-
-- **自由定製，個性體驗**：
-
-  提供詳細的配置選項，用戶可以自由設置和調整應用效果，打造個性化的使用體驗，滿足不同場景和需求。
-
-- **自動更新，保持最新**：
-
-  軟件支持自動更新和手動檢查更新功能，確保用戶始終使用最新版本，享受最優質的使用體驗。
-
-- **數據備份，輕松遷移**：
-
-  支持導出和導入配置及剪貼板內容，便於數據備份與遷移到不同平臺，保證數據的持續可用性。
-
-- **更多功能，等你探索**：
-
-  EcoPaste 還在不斷開發和添加更多有趣實用的功能，期待與你一起探索和發現這款剪貼板管理工具的更多可能性。
-
-## 常見問題
-
-<details>
-<summary>1. MacOS 提示 EcoPaste.app 已損壞，無法打開。</summary>
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="./images/damaged-dark.zh-TW.png" />
-  <source media="(prefers-color-scheme: light)" srcset="./images/damaged-light.zh-TW.png" />
-  <img src="./images/damaged-light.zh-TW.png" />
-</picture>
-
-在終端窗口輸入以下命令，按回車鍵後輸入系統密碼並再次按回車鍵即可。
-
-```bash
-sudo xattr -r -d com.apple.quarantine /Applications/EcoPaste.app
-```
-
-</details>
+2. ❓ 如果問題仍未解决，請提交新的 [issue](https://github.com/EcoPasteHub/EcoPaste/issues/new/choose)，並附上詳細描述，方便我們快速定位和解决。
 
 ## 歷史星標
 
 <a href="https://star-history.com/#EcoPasteHub/EcoPaste&Date">
-
  <picture>
    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=EcoPasteHub/EcoPaste&type=Date&theme=dark" />
    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=EcoPasteHub/EcoPaste&type=Date" />
@@ -211,20 +105,59 @@ sudo xattr -r -d com.apple.quarantine /Applications/EcoPaste.app
  </picture>
 </a>
 
-## 反饋和交流
+## 社區交流
 
-我們推薦使用 [issue](https://github.com/EcoPasteHub/EcoPaste/issues) 提供最直接和有效的反饋。當然，也可以選擇以下方式進行反饋：
+⚠️ 溫馨提示：群聊僅限日常討論和經驗分享，如需迴響問題或提交新需求，請查看[問題迴響](#問題迴響)。
 
-- 微信
-
-<img width="25%" src="https://picture-bed.ayangweb.cn/EcoPaste/wechat.png" />
+<table>
+  <thead>
+    <tr>
+      <th width="33.3%">微信群</th>
+      <th width="33.3%">QQ 群</th>
+      <th width="33.3%">Telegram</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <picture>
+          <source media="(prefers-color-scheme: dark)" srcset="https://ecopaste.cn/community/wechat-group-dark.png" />
+          <source media="(prefers-color-scheme: light)" srcset="https://ecopaste.cn/community/wechat-group-light.png" />
+          <img src="https://ecopaste.cn/community/wechat-group-light.png" />
+        </picture>
+      </td>
+      <td>
+        <picture>
+          <source media="(prefers-color-scheme: dark)" srcset="https://ecopaste.cn/community/qq-group-dark.png" />
+          <source media="(prefers-color-scheme: light)" srcset="https://ecopaste.cn/community/qq-group-light.png" />
+          <img src="https://ecopaste.cn/community/qq-group-light.png" />
+        </picture>
+      </td>
+      <td>
+        <picture>
+          <source media="(prefers-color-scheme: dark)" srcset="https://ecopaste.cn/community/telegram-chat-dark.png" />
+          <source media="(prefers-color-scheme: light)" srcset="https://ecopaste.cn/community/telegram-chat-light.png" />
+          <img src="https://ecopaste.cn/community/telegram-chat-light.png" />
+        </picture>
+      </td>
+    </tr>
+  </tbody>
+</table>
 
 ## 貢獻者
 
-感謝大家為 EcoPaste 做出的貢獻。
-
-如果你也想為 EcoPaste 做出貢獻，請參考 [貢獻指南](./.github/CONTRIBUTING/zh-TW.md)。
+感謝大家為 EcoPaste 做出的寶貴貢獻！如果你也希望為 EcoPaste 做出貢獻，請查閱[貢獻指南](./.github/CONTRIBUTING/zh-TW.md)。
 
 <a href="https://github.com/EcoPasteHub/EcoPaste/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=EcoPasteHub/EcoPaste" />
 </a>
+
+## 贊助
+
+如果您覺得這個項目對您有幫助，可以考慮贊助支持我們！您的支持將幫助我們更好地維護和發展項目，讓 EcoPaste 持續為社區創造價值。
+
+贊助時請務必填寫留言，以便我們收錄到[贊助名單](https://ecopaste.cn/sponsor/index)中，感謝您的支持與鼓勵！
+
+|                           微信                            |                       支付寶                        |
+| :-------------------------------------------------------: | :-------------------------------------------------: |
+| ![wehcat-pay](https://ecopaste.cn/sponsor/wechat-pay.png) | ![ali-pay](https://ecopaste.cn/sponsor/ali-pay.png) |

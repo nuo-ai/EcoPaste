@@ -1,7 +1,8 @@
-import type { ClipboardItem } from "@/types/database";
+import type { HistoryTablePayload } from "@/types/database";
+import DOMPurify from "dompurify";
 import type { FC } from "react";
 
-const HTML: FC<Partial<ClipboardItem>> = (props) => {
+const HTML: FC<Partial<HistoryTablePayload>> = (props) => {
 	const { value = "" } = props;
 	const containerRef = useRef<HTMLDivElement>(null);
 
@@ -35,8 +36,8 @@ const HTML: FC<Partial<ClipboardItem>> = (props) => {
 	return (
 		<div
 			ref={containerRef}
-			dangerouslySetInnerHTML={{ __html: value }}
 			className="translate-z-0"
+			dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(value) }}
 		/>
 	);
 };

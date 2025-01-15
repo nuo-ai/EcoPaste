@@ -1,5 +1,6 @@
 import ProSelect from "@/components/ProSelect";
 import type { Theme } from "@/types/store";
+import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
 import { useSnapshot } from "valtio";
 
 interface Option {
@@ -7,9 +8,30 @@ interface Option {
 	value: Theme;
 }
 
+const appWindow = getCurrentWebviewWindow();
+
 const ThemeMode = () => {
 	const { appearance } = useSnapshot(globalStore);
 	const { t } = useTranslation();
+
+	useMount(() => {
+		// 监听系统主题的变化
+		appWindow.onThemeChanged(async ({ payload }) => {
+			if (globalStore.appearance.theme !== "auto") return;
+
+			globalStore.appearance.isDark = payload === "dark";
+		});
+	});
+
+	useImmediateKey(globalStore.appearance, "theme", async (value) => {
+		let nextTheme = value === "auto" ? null : value;
+
+		await appWindow.setTheme(nextTheme);
+
+		nextTheme = nextTheme ?? (await appWindow.theme());
+
+		globalStore.appearance.isDark = nextTheme === "dark";
+	});
 
 	const options: Option[] = [
 		{

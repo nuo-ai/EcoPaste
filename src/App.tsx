@@ -1,5 +1,4 @@
 import { HappyProvider } from "@ant-design/happy-work-theme";
-import { listen } from "@tauri-apps/api/event";
 import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
 import { error } from "@tauri-apps/plugin-log";
 import { open } from "@tauri-apps/plugin-shell";
@@ -11,38 +10,44 @@ import { useSnapshot } from "valtio";
 const { defaultAlgorithm, darkAlgorithm } = theme;
 
 const App = () => {
-	const { appearance, env } = useSnapshot(globalStore);
+	const { appearance } = useSnapshot(globalStore);
+	const { restoreState } = useWindowState();
+	const [ready, { toggle }] = useBoolean();
 
 	useMount(async () => {
+		await restoreState();
+
 		await restoreStore();
+
+		toggle();
 
 		// 生成 antd 的颜色变量
 		generateColorVars();
-
-		// 监听语言的变化
-		watchKey(globalStore.appearance, "language", i18n.changeLanguage);
-
-		// 监听是否是暗黑模式
-		watchKey(globalStore.appearance, "isDark", (value) => {
-			if (value) {
-				document.documentElement.classList.add("dark");
-			} else {
-				document.documentElement.classList.remove("dark");
-			}
-		});
-
-		// 监听显示窗口的事件
-		listen(LISTEN_KEY.SHOW_WINDOW, ({ payload }) => {
-			const appWindow = getCurrentWebviewWindow();
-
-			if (appWindow.label !== payload) return;
-
-			showWindow();
-		});
-
-		// 监听关闭数据库的事件
-		listen(LISTEN_KEY.CLOSE_DATABASE, closeDatabase);
 	});
+
+	// 监听语言的变化
+	useImmediateKey(globalStore.appearance, "language", i18n.changeLanguage);
+
+	// 监听是否是暗黑模式
+	useImmediateKey(globalStore.appearance, "isDark", (value) => {
+		if (value) {
+			document.documentElement.classList.add("dark");
+		} else {
+			document.documentElement.classList.remove("dark");
+		}
+	});
+
+	// 监听显示窗口的事件
+	useTauriListen(LISTEN_KEY.SHOW_WINDOW, ({ payload }) => {
+		const appWindow = getCurrentWebviewWindow();
+
+		if (appWindow.label !== payload) return;
+
+		showWindow();
+	});
+
+	// 监听关闭数据库的事件
+	useTauriListen(LISTEN_KEY.CLOSE_DATABASE, closeDatabase);
 
 	// 生产环境禁用默认的右键菜单
 	useEventListener("contextmenu", (event) => {
@@ -86,7 +91,7 @@ const App = () => {
 			}}
 		>
 			<HappyProvider>
-				{env.saveDataDir && <RouterProvider router={router} />}
+				{ready && <RouterProvider router={router} />}
 			</HappyProvider>
 		</ConfigProvider>
 	);

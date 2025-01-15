@@ -1,26 +1,23 @@
 import type { AudioRef } from "@/components/Audio";
 import Audio from "@/components/Audio";
 import { getWebShortcuts } from "@/components/ProShortcut/keys";
-import type { ClipboardItem, TablePayload } from "@/types/database";
+import type { HistoryTablePayload, TablePayload } from "@/types/database";
 import type { Store } from "@/types/store";
-import { listen } from "@tauri-apps/api/event";
 import type { EventEmitter } from "ahooks/lib/useEventEmitter";
-import { find, findIndex, isNil, last, merge, range } from "lodash-es";
+import { find, findIndex, isNil, last, range } from "lodash-es";
 import { nanoid } from "nanoid";
 import { createContext } from "react";
 import { useSnapshot } from "valtio";
-import { subscribeKey } from "valtio/utils";
 import Dock from "./components/Dock";
 import Float from "./components/Float";
 
 interface State extends TablePayload {
 	pin?: boolean;
-	list: ClipboardItem[];
+	list: HistoryTablePayload[];
 	activeId?: string;
 	eventBusId?: string;
 	$eventBus?: EventEmitter<string>;
 	quickPasteKeys: string[];
-	scrollToIndex?: (index: number) => void;
 }
 
 const INITIAL_STATE: State = {
@@ -30,7 +27,7 @@ const INITIAL_STATE: State = {
 
 interface ClipboardPanelContextValue {
 	state: State;
-	getList?: (payload?: ClipboardItem) => Promise<void>;
+	getList?: (payload?: HistoryTablePayload) => Promise<void>;
 }
 
 export const ClipboardPanelContext = createContext<ClipboardPanelContextValue>({
@@ -50,7 +47,7 @@ const ClipboardPanel = () => {
 		// 开启剪贴板监听
 		startListen();
 
-		// 监听剪切板更新
+		// 监听剪贴板更新
 		onClipboardUpdate((payload) => {
 			if (clipboardStore.audio.copy) {
 				audioRef.current?.play();
@@ -63,6 +60,8 @@ const ClipboardPanel = () => {
 			const createTime = formatDate();
 
 			if (findItem) {
+				if (!clipboardStore.content.autoSort) return;
+
 				const { id } = findItem;
 
 				const index = findIndex(state.list, { id });
@@ -73,7 +72,7 @@ const ClipboardPanel = () => {
 
 				updateSQL("history", { id, createTime });
 			} else {
-				const data: ClipboardItem = {
+				const data: HistoryTablePayload = {
 					...payload,
 					createTime,
 					id: nanoid(),
@@ -87,33 +86,37 @@ const ClipboardPanel = () => {
 				insertSQL("history", data);
 			}
 		});
+	});
 
-		// 监听刷新列表
-		listen(LISTEN_KEY.REFRESH_CLIPBOARD_LIST, getList);
+	// 监听快速粘贴的启用状态变更
+	useImmediateKey(globalStore.shortcut.quickPaste, "enable", () => {
+		setQuickPasteKeys();
+	});
 
-		// 监听配置项变化
-		listen<Store>(LISTEN_KEY.STORE_CHANGED, ({ payload }) => {
-			merge(globalStore, payload.globalStore);
-			merge(clipboardStore, payload.clipboardStore);
-		});
+	// 监听快速粘贴的快捷键变更
+	useSubscribeKey(globalStore.shortcut.quickPaste, "value", () => {
+		setQuickPasteKeys();
+	});
 
-		// 监听快速粘贴的启用状态变更
-		watchKey(globalStore.shortcut.quickPaste, "enable", setQuickPasteKeys);
+	// 监听是否显示任务栏图标
+	useImmediateKey(globalStore.app, "showTaskbarIcon", showTaskbarIcon);
 
-		// 监听快速粘贴的快捷键变更
-		subscribeKey(globalStore.shortcut.quickPaste, "value", setQuickPasteKeys);
+	// 监听刷新列表
+	useTauriListen(LISTEN_KEY.REFRESH_CLIPBOARD_LIST, () => getList());
 
-		// 监听是否显示任务栏图标
-		watchKey(globalStore.app, "showTaskbarIcon", showTaskbarIcon);
+	// 监听配置项变化
+	useTauriListen<Store>(LISTEN_KEY.STORE_CHANGED, ({ payload }) => {
+		deepAssign(globalStore, payload.globalStore);
+		deepAssign(clipboardStore, payload.clipboardStore);
+	});
 
-		// 切换剪贴板监听状态
-		listen<boolean>(LISTEN_KEY.TOGGLE_LISTEN_CLIPBOARD, ({ payload }) => {
-			toggleListen(payload);
-		});
+	// 切换剪贴板监听状态
+	useTauriListen<boolean>(LISTEN_KEY.TOGGLE_LISTEN_CLIPBOARD, ({ payload }) => {
+		toggleListen(payload);
 	});
 
 	// 监听窗口焦点
-	useFocus({
+	useTauriFocus({
 		onBlur() {
 			if (state.pin) return;
 
@@ -151,7 +154,7 @@ const ClipboardPanel = () => {
 	const getList = async () => {
 		const { group, search, favorite } = state;
 
-		state.list = await selectSQL<ClipboardItem[]>("history", {
+		state.list = await selectSQL<HistoryTablePayload[]>("history", {
 			group,
 			search,
 			favorite,
@@ -173,7 +176,7 @@ const ClipboardPanel = () => {
 
 	return (
 		<>
-			{!isLinux() && <Audio hiddenIcon ref={audioRef} />}
+			<Audio hiddenIcon ref={audioRef} />
 
 			<ClipboardPanelContext.Provider
 				value={{
