@@ -1,19 +1,26 @@
 import type { Store } from "@/types/store";
 import { getName, getVersion } from "@tauri-apps/api/app";
 import { appDataDir } from "@tauri-apps/api/path";
-import { exists, readTextFile, writeTextFile } from "@tauri-apps/plugin-fs";
-import { type } from "@tauri-apps/plugin-os";
-import { merge, omit } from "lodash-es";
+import {
+	exists,
+	mkdir,
+	readTextFile,
+	writeTextFile,
+} from "@tauri-apps/plugin-fs";
+import { platform } from "@tauri-apps/plugin-os";
+import { omit } from "lodash-es";
 
 /**
  * 初始化配置项
  */
 const initStore = async () => {
 	globalStore.appearance.language ??= await getLocale();
-	globalStore.env.platform = await type();
+	globalStore.env.platform = platform();
 	globalStore.env.appName = await getName();
 	globalStore.env.appVersion = await getVersion();
 	globalStore.env.saveDataDir ??= await appDataDir();
+
+	await mkdir(globalStore.env.saveDataDir, { recursive: true });
 };
 
 /**
@@ -42,11 +49,11 @@ export const restoreStore = async (backup = false) => {
 		const store: Store = JSON.parse(content);
 		const nextGlobalStore = omit(store.globalStore, backup ? "env" : "");
 
-		merge(globalStore, nextGlobalStore);
-		merge(clipboardStore, store.clipboardStore);
+		deepAssign(globalStore, nextGlobalStore);
+		deepAssign(clipboardStore, store.clipboardStore);
 	}
 
 	if (backup) return;
 
-	initStore();
+	return initStore();
 };

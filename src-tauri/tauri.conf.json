@@ -27,11 +27,12 @@
 				"transparent": true,
 				"alwaysOnTop": true,
 				"acceptFirstMouse": true,
-				"skipTaskbar": true
+				"skipTaskbar": true,
+				"visibleOnAllWorkspaces": true
 			},
 			{
 				"label": "preference",
-				"url": "index.html/#/preference/clipboard",
+				"url": "index.html/#/preference",
 				"width": 700,
 				"height": 480,
 				"minWidth": 700,
@@ -43,6 +44,7 @@
 				"hiddenTitle": true,
 				"skipTaskbar": true,
 				"titleBarStyle": "Overlay",
+				"dragDropEnabled": false,
 				"windowEffects": {
 					"effects": ["sidebar"],
 					"state": "active"
@@ -73,7 +75,7 @@
 			"icons/icon.icns",
 			"icons/icon.ico"
 		],
-		"resources": ["assets/tray.ico", "assets/tray-mac.ico"]
+		"resources": ["assets/tray.ico", "assets/drag-icon.png"]
 	},
 	"plugins": {
 		"updater": {

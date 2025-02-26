@@ -1,5 +1,6 @@
 import ProSelect from "@/components/ProSelect";
 import type { Language as TypeLanguage } from "@/types/store";
+import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
 import { useSnapshot } from "valtio";
 
 interface Option {
@@ -10,6 +11,14 @@ interface Option {
 const Language = () => {
 	const { appearance } = useSnapshot(globalStore);
 	const { t } = useTranslation();
+
+	useImmediateKey(globalStore.appearance, "language", () => {
+		const appWindow = getCurrentWebviewWindow();
+
+		raf(() => {
+			appWindow.setTitle(t("preference.title"));
+		});
+	});
 
 	const options: Option[] = [
 		{

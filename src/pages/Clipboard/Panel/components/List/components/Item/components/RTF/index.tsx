@@ -1,4 +1,4 @@
-import type { ClipboardItem } from "@/types/database";
+import type { HistoryTablePayload } from "@/types/database";
 import type { FC } from "react";
 import { EMFJS, RTFJS, WMFJS } from "rtf.js";
 import HTML from "../HTML";
@@ -7,7 +7,7 @@ RTFJS.loggingEnabled(false);
 WMFJS.loggingEnabled(false);
 EMFJS.loggingEnabled(false);
 
-const RTF: FC<ClipboardItem> = (props) => {
+const RTF: FC<HistoryTablePayload> = (props) => {
 	const { value } = props;
 
 	const [parsedHTML, setParsedHTML] = useState("");
@@ -23,6 +23,18 @@ const RTF: FC<ClipboardItem> = (props) => {
 
 		setParsedHTML(parsedHTML);
 	});
+
+	const stringToArrayBuffer = (value: string) => {
+		const buffer = new ArrayBuffer(value.length);
+
+		const bufferView = new Uint8Array(buffer);
+
+		for (let i = 0; i < value.length; i++) {
+			bufferView[i] = value.charCodeAt(i);
+		}
+
+		return buffer;
+	};
 
 	const pt2px = (elements: Element[]) => {
 		for (const element of elements) {

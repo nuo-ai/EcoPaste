@@ -1,13 +1,5 @@
 export type WindowLabel = (typeof WINDOW_LABEL)[keyof typeof WINDOW_LABEL];
 
-export interface Metadata {
-	size: number;
-	isDir: boolean;
-	isFile: boolean;
-	isExist: boolean;
-	fileName: string;
-}
-
 export interface ReadImage {
 	width: number;
 	height: number;
@@ -17,6 +9,7 @@ export interface ReadImage {
 export interface ClipboardPayload {
 	type?: "text" | "rtf" | "html" | "image" | "files";
 	group: "text" | "image" | "files";
+	subtype?: "url" | "email" | "color" | "path";
 	count: number;
 	value: string;
 	search: string;
@@ -24,7 +17,7 @@ export interface ClipboardPayload {
 	height?: number;
 }
 
-export interface WinOCR {
+export interface WindowsOCR {
 	content: string;
 	qr: Array<{
 		bounds: Array<{ x: number; y: number }>;

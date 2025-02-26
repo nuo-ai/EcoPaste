@@ -1,6 +1,6 @@
 [package]
 name = "eco-paste"
-version = "0.2.0"
+version = "0.5.0"
 description = "一款开源的跨平台剪贴板管理工具"
 authors = []
 edition = "2021"
@@ -15,34 +15,32 @@ name = "eco_paste_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
 [build-dependencies]
-tauri-build = { version = "2.0.1", features = [] }
+tauri-build = { version = "2", features = [] }
 
 [dependencies]
-tauri = { workspace = true, features = [ "tray-icon", "protocol-asset", "macos-private-api", "image-png" ] }
+tauri = { workspace = true, features = [ "tray-icon", "protocol-asset", "macos-private-api", "image-ico" ] }
 serde = { workspace = true, features = ["derive"] }
 serde_json.workspace = true
 tauri-plugin-shell.workspace = true
-tauri-plugin-single-instance = "2.0.1"
-tauri-plugin-autostart = "2.0.1"
-tauri-plugin-sql = { version = "2.0.1", features = ["sqlite"] }
-tauri-plugin-log = "2.0.1"
-tauri-plugin-global-shortcut = "2.0.1"
-tauri-plugin-os = "2.0.1"
-tauri-plugin-dialog = "2.0.1"   
-tauri-plugin-fs = "2.0.1"
-tauri-plugin-updater = "2.0.2"
-tauri-plugin-process = "2.0.1"
+tauri-plugin-single-instance = "2"
+tauri-plugin-autostart = "2"
+tauri-plugin-sql = { version = "2", features = ["sqlite"] }
+tauri-plugin-log = "2"
+tauri-plugin-global-shortcut = "2"
+tauri-plugin-os = "2"
+tauri-plugin-dialog = "2"   
+tauri-plugin-fs = "2"
+tauri-plugin-updater = "2"
+tauri-plugin-process = "2"
+tauri-plugin-drag = "2"
+tauri-plugin-macos-permissions = "2"
+tauri-plugin-fs-pro.workspace = true
 tauri-plugin-eco-window.workspace = true
-tauri-plugin-eco-macos-permissions.workspace = true
-tauri-plugin-eco-mouse.workspace = true
-tauri-plugin-eco-fs-extra.workspace = true
-tauri-plugin-eco-backup.workspace = true
 tauri-plugin-eco-locale.workspace = true
 tauri-plugin-eco-clipboard.workspace = true
 tauri-plugin-eco-ocr.workspace = true
 tauri-plugin-eco-paste.workspace = true
-tauri-plugin-eco-window-state.workspace = true
 tauri-plugin-eco-autostart.workspace = true
 
 [target."cfg(target_os = \"macos\")".dependencies]
-cocoa.workspace = true
+tauri-nspanel.workspace = true

@@ -1,4 +1,4 @@
-import type { OsType } from "@tauri-apps/plugin-os";
+import type { Platform } from "@tauri-apps/plugin-os";
 
 export type Theme = "auto" | "light" | "dark";
 
@@ -43,7 +43,7 @@ export interface GlobalStore {
 
 	// 只在当前系统环境使用
 	env: {
-		platform?: OsType;
+		platform?: Platform;
 		appName?: string;
 		appVersion?: string;
 		saveDataDir?: string;
@@ -52,12 +52,20 @@ export interface GlobalStore {
 
 export type ClickFeedback = "none" | "copy" | "paste";
 
+export type OperationButton =
+	| "copy"
+	| "pastePlain"
+	| "note"
+	| "star"
+	| "delete";
+
 export interface ClipboardStore {
 	// 窗口设置
 	window: {
 		style: "float" | "dock";
 		position: "remember" | "follow" | "center";
 		backTop: boolean;
+		showAll: boolean;
 	};
 
 	// 音效设置
@@ -72,17 +80,23 @@ export interface ClipboardStore {
 		autoClear: boolean;
 	};
 
-	// 剪切板内容设置
+	// 剪贴板内容设置
 	content: {
 		autoPaste: "single" | "double";
 		ocr: boolean;
 		copyPlain: boolean;
 		pastePlain: boolean;
+		operationButtons: OperationButton[];
+		autoFavorite: boolean;
+		deleteConfirm: boolean;
+		autoSort: boolean;
+		showOriginalContent: boolean;
 	};
 
 	// 历史记录
 	history: {
 		duration: number;
 		unit: number;
+		maxCount: number;
 	};
 }

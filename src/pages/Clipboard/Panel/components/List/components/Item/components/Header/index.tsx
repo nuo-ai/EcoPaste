@@ -1,47 +1,51 @@
 import Icon from "@/components/Icon";
 import Scrollbar from "@/components/Scrollbar";
 import { ClipboardPanelContext } from "@/pages/Clipboard/Panel";
-import type { ClipboardItem } from "@/types/database";
+import { transferData } from "@/pages/Clipboard/Settings/components/OperationButton";
+import type { HistoryTablePayload } from "@/types/database";
+import type { OperationButton } from "@/types/store";
 import { Flex } from "antd";
 import clsx from "clsx";
 import { filesize } from "filesize";
 import type { FC, MouseEvent } from "react";
+import { useSnapshot } from "valtio";
 
 interface HeaderProps {
-	data: ClipboardItem;
+	data: HistoryTablePayload;
 	copy: () => void;
+	pastePlain: () => void;
+	openNoteModel: () => void;
 	toggleFavorite: () => void;
 	deleteItem: () => void;
 }
 
 const Header: FC<HeaderProps> = (props) => {
-	const { data, copy, toggleFavorite, deleteItem } = props;
-	const { id, type, value, count, createTime, favorite } = data;
+	const { data } = props;
+	const { id, type, value, count, createTime, favorite, subtype } = data;
 	const { state } = useContext(ClipboardPanelContext);
 	const { t, i18n } = useTranslation();
-	const [copied, { toggle }] = useBoolean();
+	const { content } = useSnapshot(clipboardStore);
 
-	useEffect(() => {
-		if (!copied) return;
-
-		setTimeout(toggle, 3000);
-	}, [copied]);
+	const operationButtons = useCreation(() => {
+		return content.operationButtons.map((key) => {
+			return transferData.find((data) => data.key === key)!;
+		});
+	}, [content.operationButtons]);
 
 	const renderType = () => {
+		switch (subtype) {
+			case "url":
+				return t("clipboard.label.link");
+			case "email":
+				return t("clipboard.label.email");
+			case "color":
+				return t("clipboard.label.color");
+			case "path":
+				return t("clipboard.label.path");
+		}
+
 		switch (type) {
 			case "text":
-				if (isURL(value)) {
-					return t("clipboard.label.link");
-				}
-
-				if (isEmail(value)) {
-					return t("clipboard.label.email");
-				}
-
-				if (isColor(value)) {
-					return t("clipboard.label.color");
-				}
-
 				return t("clipboard.label.plain_text");
 			case "rtf":
 				return t("clipboard.label.rtf");
@@ -78,25 +82,30 @@ const Header: FC<HeaderProps> = (props) => {
 		);
 	};
 
-	const handleCopy = () => {
-		copy();
-		toggle();
-	};
+	const handleClick = (event: MouseEvent, key: OperationButton) => {
+		const { copy, pastePlain, openNoteModel, toggleFavorite, deleteItem } =
+			props;
 
-	const handleClick = (event: MouseEvent) => {
 		event.stopPropagation();
 
 		state.activeId = id;
-	};
 
-	const handleDelete = (event: MouseEvent) => {
-		event.stopPropagation();
-
-		deleteItem();
+		switch (key) {
+			case "copy":
+				return copy();
+			case "pastePlain":
+				return pastePlain();
+			case "note":
+				return openNoteModel();
+			case "star":
+				return toggleFavorite();
+			case "delete":
+				return deleteItem();
+		}
 	};
 
 	return (
-		<Flex justify="space-between" gap="small" className="color-2">
+		<Flex justify="space-between" gap="small" className="text-color-2">
 			<Scrollbar thumbSize={0}>
 				<Flex gap="small" className="flex-1 whitespace-nowrap text-12">
 					<span>{renderType()}</span>
@@ -111,37 +120,26 @@ const Header: FC<HeaderProps> = (props) => {
 				gap={6}
 				className={clsx(
 					"text-14 opacity-0 transition group-hover:opacity-100",
-					{
-						"opacity-100": state.activeId === id,
-					},
+					{ "opacity-100": state.activeId === id },
 				)}
-				onClick={handleClick}
 				onDoubleClick={(event) => event.stopPropagation()}
 			>
-				{copied ? (
-					<Icon
-						size={15}
-						name="i-iconamoon:check-circle-1-fill"
-						className="color-success"
-					/>
-				) : (
-					<Icon hoverable name="i-iconamoon:copy" onClick={handleCopy} />
-				)}
+				{operationButtons.map((item) => {
+					const { key, icon, activeIcon, title } = item;
 
-				<Icon
-					hoverable
-					name={favorite ? "i-iconamoon:star-fill" : "i-iconamoon:star"}
-					className={clsx({ "text-gold!": favorite })}
-					onClick={toggleFavorite}
-				/>
+					const isFavorite = key === "star" && favorite;
 
-				<Icon
-					hoverable
-					size={15}
-					name="i-iconamoon:trash-simple"
-					className="hover:text-danger!"
-					onClick={handleDelete}
-				/>
+					return (
+						<Icon
+							key={key}
+							hoverable
+							name={isFavorite ? activeIcon : icon}
+							title={t(title)}
+							className={clsx({ "text-gold!": isFavorite })}
+							onClick={(event) => handleClick(event, key)}
+						/>
+					);
+				})}
 			</Flex>
 		</Flex>
 	);

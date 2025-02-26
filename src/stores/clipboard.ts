@@ -1,11 +1,12 @@
 import type { ClipboardStore } from "@/types/store";
-import proxyWithPersist from "valtio-persist";
+import { proxy } from "valtio";
 
-export const CLIPBOARD_STORE_INITIAL_STATE: ClipboardStore = {
+export const clipboardStore = proxy<ClipboardStore>({
 	window: {
 		style: "float",
 		position: "remember",
 		backTop: false,
+		showAll: false,
 	},
 
 	audio: {
@@ -23,19 +24,16 @@ export const CLIPBOARD_STORE_INITIAL_STATE: ClipboardStore = {
 		ocr: true,
 		copyPlain: false,
 		pastePlain: false,
+		operationButtons: ["copy", "star", "delete"],
+		autoFavorite: false,
+		deleteConfirm: true,
+		autoSort: false,
+		showOriginalContent: false,
 	},
 
 	history: {
 		duration: 0,
 		unit: 1,
+		maxCount: 0,
 	},
-};
-
-export const clipboardStore = proxyWithPersist<ClipboardStore>({
-	name: "clipboard",
-	initialState: { ...CLIPBOARD_STORE_INITIAL_STATE },
-	persistStrategies,
-	version: 0,
-	migrations: {},
-	getStorage,
 });

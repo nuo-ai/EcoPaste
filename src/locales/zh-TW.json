@@ -19,7 +19,8 @@
 					"window_position_remember": "記住位置",
 					"window_position_follow": "跟隨滑鼠",
 					"window_position_center": "螢幕中央",
-					"back_top": "啟動時回到頂部"
+					"back_top": "啟動時回到頂部",
+					"show_all": "啟動時切換至全部分組"
 				},
 				"hints": {
 					"back_top": "啟動視窗時，滾動至頂部並選中首條"
@@ -32,7 +33,7 @@
 				}
 			},
 			"search_box_settings": {
-				"title": "搜尋框設定",
+				"title": "搜尋設定",
 				"label": {
 					"default_focus": "預設焦點",
 					"auto_clear": "自動清除",
@@ -46,20 +47,41 @@
 				}
 			},
 			"content_settings": {
-				"title": "剪貼簿內容",
+				"title": "內容設定",
+				"button": {
+					"custom_operation_button": "自定義"
+				},
 				"label": {
 					"auto_paste": "自動貼上",
 					"auto_paste_single": "單擊",
 					"auto_paste_double": "雙擊",
 					"image_ocr": "圖片OCR",
 					"copy_as_plain": "複製為純文字",
-					"paste_as_plain": "粘貼為純文字"
+					"paste_as_plain": "粘貼為純文字",
+					"operation_button": "操作按鈕",
+					"custom_operation_button_title": "自定義操作按鈕",
+					"operation_button_option": {
+						"copy": "複製",
+						"paste_plain": "貼上為純文本",
+						"notes": "備註",
+						"favorite": "收藏",
+						"delete": "刪除"
+					},
+					"auto_favorite": "自動收藏",
+					"delete_confirm": "删除確認",
+					"auto_sort": "自動排序",
+					"show_original_content": "顯示原內容"
 				},
 				"hints": {
 					"auto_paste": "當使用滑鼠左鍵時，快速將內容貼上到輸入位置",
 					"image_ocr": "注意：使用前請務必先下載",
 					"copy_as_plain": "富文字和HTML格式在複製時僅保留純文字內容",
-					"paste_as_plain": "富文字和HTML格式在粘貼時僅保留純文字內容"
+					"paste_as_plain": "富文字和HTML格式在粘貼時僅保留純文字內容",
+					"operation_button": "自定義操作剪貼簿內容的圖示按鈕",
+					"auto_favorite": "新增或編輯備註後自動收藏",
+					"delete_confirm": "删除剪貼板內容時彈出確認對話方塊",
+					"auto_sort": "複製已存在的內容時排列到最前面",
+					"show_original_content": "添加備註後，滑鼠懸停時是否顯示原內容"
 				}
 			}
 		},
@@ -73,12 +95,9 @@
 				},
 				"label": {
 					"duration": "保留時長",
-					"duration_unit": {
-						"day": "天",
-						"week": "週",
-						"month": "月",
-						"year": "年"
-					},
+					"duration_unit": "天",
+					"max_count": "最大保留條數",
+					"max_count_unit": "條",
 					"delete_title": "刪除歷史記錄",
 					"time_range": "時間範圍",
 					"time_range_opt": {
@@ -92,7 +111,8 @@
 					"include_favorite": "刪除收藏"
 				},
 				"hints": {
-					"duration": "輸入 0 表示永久保留，收藏在自動刪除時將保留",
+					"duration": "輸入 0 表示永久保留，僅統計和删除未收藏條目",
+					"max_count": "輸入 0 表示永久保留，僅統計和删除未收藏條目",
 					"delete_success": "刪除成功"
 				}
 			}
@@ -179,13 +199,23 @@
 				}
 			},
 			"import_export": {
-				"title": "導入和導出",
+				"title": "導入和匯出",
 				"button": {
 					"import": "導入數據",
-					"export": "導出數據"
+					"export": "匯出數據",
+					"cancel": "取消",
+					"confirm_import": "確定",
+					"confirm_export": "匯出"
+				},
+				"label": {
+					"confirm_import": "導入須知",
+					"confirm_export": "匯出須知"
 				},
 				"hints": {
-					"import_success": "導入成功"
+					"import_success": "導入成功",
+					"export_success": "匯出成功",
+					"confirm_import": "導入的剪貼板數據將覆蓋現有數據，確定要繼續嗎？",
+					"confirm_export": "匯出的數據包含所有偏好設定和剪貼板內容，且均以明文形式保存，請妥善保管。"
 				}
 			}
 		},
@@ -196,7 +226,8 @@
 					"version": "版本：",
 					"software_info": "軟件資訊",
 					"open_source_address": "開源地址",
-					"community": "社區交流"
+					"community": "社區交流",
+					"sponsor": "贊助我們"
 				},
 				"button": {
 					"check_update": "檢查更新",
@@ -247,6 +278,7 @@
 			"link": "連結",
 			"email": "信箱",
 			"color": "顏色",
+			"path": "路徑",
 			"plain_text": "純文字",
 			"rtf": "富文字",
 			"html": "HTML",
@@ -255,7 +287,8 @@
 			"n_chars": "{{0}}個字元"
 		},
 		"hints": {
-			"search_placeholder": "搜尋"
+			"search_placeholder": "搜尋",
+			"delete_modal_content": "確定要删除此項嗎？"
 		}
 	},
 	"component": {
@@ -286,11 +319,11 @@
 				"preference": "偏好設定",
 				"start_listening": "開啟監聽",
 				"stop_listening": "停止監聽",
-				"about": "關於",
 				"check_update": "檢查更新",
 				"open_source_address": "開源地址",
 				"version": "版本",
-				"exit": "退出"
+				"relaunch": "重啓應用",
+				"exit": "退出應用"
 			}
 		},
 		"note_modal": {

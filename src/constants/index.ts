@@ -1,3 +1,5 @@
+export const WEBSITE_LINK = "https://www.ecopaste.cn";
+
 export const GITHUB_LINK = "https://github.com/EcoPasteHub/EcoPaste";
 
 export const GITHUB_ISSUES_LINK = `${GITHUB_LINK}/issues`;
@@ -30,17 +32,14 @@ export const LISTEN_KEY = {
 	CLIPBOARD_ITEM_SELECT_NEXT: "clipboard-item-select-next",
 	CLOSE_DATABASE: "close-database",
 	TOGGLE_LISTEN_CLIPBOARD: "toggle-listen-clipboard",
+	CLIPBOARD_ITEM_FAVORITE: "clipboard-item-favorite",
+	ACTIVATE_BACK_TOP: "activate-back-top",
 };
 
 export const WINDOW_PLUGIN = {
 	SHOW_WINDOW: "plugin:eco-window|show_window",
 	HIDE_WINDOW: "plugin:eco-window|hide_window",
 	SHOW_TASKBAR_ICON: "plugin:eco-window|show_taskbar_icon",
-};
-
-export const FS_EXTRA_PLUGIN = {
-	METADATA: "plugin:eco-fs-extra|metadata",
-	OPEN_PATH: "plugin:eco-fs-extra|open_path",
 };
 
 export const CLIPBOARD_PLUGIN = {
@@ -64,18 +63,8 @@ export const CLIPBOARD_PLUGIN = {
 	CLIPBOARD_UPDATE: "plugin:eco-clipboard://clipboard_update",
 };
 
-export const MOUSE_PLUGIN = {
-	GET_MOUSE_COORDS: "plugin:eco-mouse|get_mouse_coords",
-};
-
 export const OCR_PLUGIN = {
 	SYSTEM_OCR: "plugin:eco-ocr|system_ocr",
-};
-
-export const BACKUP_PLUGIN = {
-	EXPORT_DATA: "plugin:eco-backup|export_data",
-	IMPORT_DATA: "plugin:eco-backup|import_data",
-	MOVE_DATA: "plugin:eco-backup|move_data",
 };
 
 export const LOCALE_PLUGIN = {
@@ -84,15 +73,6 @@ export const LOCALE_PLUGIN = {
 
 export const PASTE_PLUGIN = {
 	PASTE: "plugin:eco-paste|paste",
-};
-
-export const MACOS_PERMISSIONS_PLUGIN = {
-	CHECK_ACCESSIBILITY_PERMISSIONS:
-		"plugin:eco-macos-permissions|check_accessibility_permissions",
-	REQUEST_ACCESSIBILITY_PERMISSIONS:
-		"plugin:eco-macos-permissions|request_accessibility_permissions",
-	REQUEST_FULL_DISK_ACCESS_PERMISSIONS:
-		"plugin:eco-macos-permissions|request_full_disk_access_permissions",
 };
 
 export const AUTOSTART_PLUGIN = {

@@ -1,19 +1,25 @@
-import type { ClipboardItem } from "@/types/database";
+import type { HistoryTablePayload } from "@/types/database";
 import { convertFileSrc } from "@tauri-apps/api/core";
 import type { FC } from "react";
 
-const Image: FC<Partial<ClipboardItem>> = (props) => {
-	const { value = "" } = props;
+interface ImageProps extends Partial<HistoryTablePayload> {
+	className?: string;
+}
+
+const Image: FC<ImageProps> = (props) => {
+	const { value = "", className = "max-h-full" } = props;
 
 	const [src, setSrc] = useState("");
 
-	useMount(async () => {
+	useAsyncEffect(async () => {
+		if (!value) return;
+
 		const src = await convertFileSrc(value);
 
 		setSrc(src);
-	});
+	}, [value]);
 
-	return <img src={src} className="max-h-full" />;
+	return <img src={src} className={className} />;
 };
 
 export default memo(Image);

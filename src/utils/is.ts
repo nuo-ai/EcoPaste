@@ -1,3 +1,6 @@
+import { platform } from "@tauri-apps/plugin-os";
+import isUrl from "is-url";
+
 /**
  * 是否为开发环境
  */
@@ -9,31 +12,28 @@ export const isDev = () => {
  * 是否为 macos 系统
  */
 export const isMac = () => {
-	return globalStore.env.platform === "macos";
+	return platform() === "macos";
 };
 
 /**
  * 是否为 windows 系统
  */
 export const isWin = () => {
-	return globalStore.env.platform === "windows";
+	return platform() === "windows";
 };
 
 /**
  * 是否为 linux 系统
  */
 export const isLinux = () => {
-	return globalStore.env.platform === "linux";
+	return platform() === "linux";
 };
 
 /**
  * 是否为链接
  */
 export const isURL = (value: string) => {
-	const regex =
-		/^(https?:\/\/)?((localhost)|(([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}))(:\d+)?(\/[a-zA-Z0-9\-._~:\/?#@!$&'()*+,;=%]*)?$/;
-
-	return regex.test(value);
+	return isUrl(value);
 };
 
 /**
@@ -49,13 +49,55 @@ export const isEmail = (value: string) => {
  * 是否为颜色
  */
 export const isColor = (value: string) => {
+	const excludes = [
+		"none",
+		"currentColor",
+		"-moz-initial",
+		"inherit",
+		"initial",
+		"revert",
+		"revert-layer",
+		"unset",
+		"ActiveBorder",
+		"ActiveCaption",
+		"AppWorkspace",
+		"Background",
+		"ButtonFace",
+		"ButtonHighlight",
+		"ButtonShadow",
+		"ButtonText",
+		"CaptionText",
+		"GrayText",
+		"Highlight",
+		"HighlightText",
+		"InactiveBorder",
+		"InactiveCaption",
+		"InactiveCaptionText",
+		"InfoBackground",
+		"InfoText",
+		"Menu",
+		"MenuText",
+		"Scrollbar",
+		"ThreeDDarkShadow",
+		"ThreeDFace",
+		"ThreeDHighlight",
+		"ThreeDLightShadow",
+		"ThreeDShadow",
+		"Window",
+		"WindowFrame",
+		"WindowText",
+	];
+
+	if (excludes.includes(value) || value.includes("url")) return false;
+
 	const style = new Option().style;
 
-	style.background = value;
+	style.backgroundColor = value;
+	style.backgroundImage = value;
 
-	const { background } = style;
+	const { backgroundColor, backgroundImage } = style;
 
-	return background !== "";
+	return backgroundColor !== "" || backgroundImage !== "";
 };
 
 /**
